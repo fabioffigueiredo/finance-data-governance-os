@@ -1,0 +1,6 @@
+Finance Data Governance OS Rules:
+- No raw PII in outputs.
+- Compute-to-data only.
+- Use .agent/skills/finance-governance playbooks.
+- Evidence artifacts required.
+- Least privilege, deny by default.

@@ -1,0 +1,21 @@
+{
+  "request_id": "<uuid>",
+  "timestamp": "<iso8601>",
+  "actor": "<name-or-service>",
+  "skills_applied": [
+    "fg-01-data-classification",
+    "fg-02-lgpd-legal-basis-check"
+  ],
+  "dataset_hash": "<sha256>",
+  "policy_id": "<policy-id>",
+  "approvals": [
+    {
+      "role": "data_owner",
+      "by": "<name>",
+      "at": "<iso8601>"
+    }
+  ],
+  "artifacts": {
+    "report": "artifacts/<task>/report.md"
+  }
+}

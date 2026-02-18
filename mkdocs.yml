@@ -1,0 +1,56 @@
+site_name: Finance Data Governance OS
+site_description: Governança de Dados & ML para Mercado Financeiro (LGPD + BACEN + CVM)
+site_url: https://<SEU-USER>.github.io/finance-data-governance-os/
+repo_url: https://github.com/<SEU-USER>/finance-data-governance-os
+repo_name: finance-data-governance-os
+
+theme:
+  name: material
+  language: pt
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.expand
+    - content.code.copy
+    - search.suggest
+    - search.highlight
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+
+nav:
+  - Início: index.md
+  - Como usar:
+      - Fluxo recomendado: howto/workflow.md
+      - Evidências: howto/evidence.md
+      - Instalação por IDE: howto/ides.md
+  - Governança:
+      - Classificação & LGPD: governance/lgpd.md
+      - BACEN & CVM (controles): governance/regulators.md
+      - Catálogo, Lineage, Qualidade: governance/metadata-quality.md
+      - Acessos (RBAC/ABAC): governance/access.md
+  - Dados & SQL:
+      - Views governadas: data/sql-views.md
+      - Casos (crédito, fraude, churn): data/use-cases.md
+  - ML Governado:
+      - Treino protegido (compute-to-data): ml/protected-training.md
+      - Seleção de modelos: ml/model-selection.md
+      - Model card & aprovação: ml/model-card.md
+      - Produção & monitoramento: ml/production.md
+  - Storytelling & BI:
+      - Narrativa (storytelling): storytelling/narrative.md
+      - Power BI: storytelling/powerbi.md
+      - Metabase: storytelling/metabase.md
+      - Looker Studio: storytelling/looker-studio.md
+      - Web (Google Charts): storytelling/google-charts.md
+  - DCAM & DMBOK:
+      - DCAM score: frameworks/dcam.md
+      - Operating model (DMBOK): frameworks/dmbok.md
+  - Referências: references.md

@@ -1,0 +1,20 @@
+name: repo-checks
+on:
+  push:
+  pull_request:
+
+jobs:
+  sanity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Python syntax check (if present)
+        run: |
+          python -m compileall . || true
+      - name: Ensure key instruction files exist
+        run: |
+          test -f AGENTS.md
+          test -f CLAUDE.md
+          test -f README.md
+          test -f .github/copilot-instructions.md
+          test -f .cursorrules
