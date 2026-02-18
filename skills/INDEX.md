@@ -38,4 +38,12 @@ Regra: em ambiente financeiro, **saem apenas métricas agregadas + evidências**
 - 27 Looker Studio spec
 - 28 Web portal (Google Charts) spec
 
+## Databricks & Lakehouse Governance
+- Governed workspace setup
+- Unity catalog governance
+- Secure ML training (Databricks)
+- MLflow model governance
+- Feature store governance
+
+
 > Dica: depois podemos transformar isso num índice automático (gerado via script).
