@@ -1,13 +1,20 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# install/global/update.sh — Atualiza o Finance Data Governance OS global
+# Faz git pull e re-executa o install global
+set -euo pipefail
 
-echo "Updating Governance OS..."
+# Detecta a raiz do repositório (onde este script está localizado)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
+echo "🔄 Updating Finance Data Governance OS..."
+
+cd "$REPO_ROOT"
 git pull
 
-BASE="$HOME/.ai-governance"
+echo ""
+echo "🔄 Re-installing global library..."
+bash "$SCRIPT_DIR/install.sh"
 
-cp -r agents $BASE/ 2>/dev/null || true
-cp -r skills $BASE/ 2>/dev/null || true
-cp -r templates $BASE/ 2>/dev/null || true
-
-echo "Updated."
+echo ""
+echo "✅ Update complete."

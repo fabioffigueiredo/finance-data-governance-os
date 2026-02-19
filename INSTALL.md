@@ -3,44 +3,92 @@
 Framework instalável de governança de IA e dados para ambientes regulados.
 
 Compatível com:
-Cursor
-VSCode
-Antigravity
-Codex
-Claude Code
-Windsurf
+- Cursor
+- VSCode
+- Antigravity
+- Codex
+- Claude Code
+- Windsurf
 
 ---
 
-## Global install (máquina inteira)
+## Quick Install
 
+### 1. Clone the repository
+
+```bash
 git clone https://github.com/fabioffigueiredo/finance-data-governance-os.git
 cd finance-data-governance-os
-bash install/global/install.sh
+```
 
-Instala em:
-~/.ai-governance/
+### 2. Choose install mode
 
----
+#### Local install (per project)
 
-## Local install (por projeto)
+Cria `.agent/` no diretório atual com agents, skills, workflows e rules:
 
-Dentro de qualquer projeto:
-
+```bash
 bash install/local/install.sh
+```
 
-Cria:
-.agent/
-.project/
+Ou para instalar em outro projeto:
+
+```bash
+bash install/local/install.sh /caminho/para/meu-projeto
+```
+
+#### Global install (entire machine)
+
+Instala em `~/.ai-governance/`:
+
+```bash
+bash install/global/install.sh
+```
 
 ---
 
 ## Update
 
+Atualiza o repositório e re-instala globalmente:
+
+```bash
 bash install/global/update.sh
+```
 
 ---
 
-## Remove
+## Uninstall
 
-rm -rf ~/.ai-governance
+Remove a instalação global:
+
+```bash
+bash install/global/uninstall.sh
+```
+
+---
+
+## Via npm CLI (futuro)
+
+Quando publicado no npm, será possível instalar com:
+
+```bash
+npx @fabioffigueiredo/fgos-kit init
+```
+
+Ou instalar globalmente:
+
+```bash
+npm i -g @fabioffigueiredo/fgos-kit
+fgos-kit init
+```
+
+---
+
+## What gets installed
+
+| Diretório | Conteúdo |
+|-----------|----------|
+| `.agent/agents/` | Agents de governança (10 core + Databricks) |
+| `.agent/skills/` | Skills operacionais (29 finance + 5 Databricks) |
+| `.agent/workflows/` | Fluxos de governança reutilizáveis |
+| `.agent/rules/` | Regras de compliance |

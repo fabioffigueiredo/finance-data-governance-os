@@ -74,13 +74,44 @@ Designed for:
 
 ## Repository Structure
 
-agents/ → governance and ML agents
-skills/ → operational governance skills
-docs/ → operating manuals and workflows
-templates/ → evidence, policy and report templates
-demos/ → synthetic examples and use cases
-.agent/ → IDE runtime (Cursor, VSCode, Codex, Antigravity)
+```
+agents/       → governance and ML agents (10 core + Databricks)
+skills/       → operational governance skills (29 finance + 5 Databricks)
+workflows/    → reusable governance workflows
+rules/        → compliance and governance rules
+docs/         → operating manuals, architecture docs
+templates/    → evidence, policy and report templates
+demos/        → synthetic examples and use cases
+install/      → shell installers (local & global)
+cli/          → npm CLI installer (npx @fabioffigueiredo/fgos-kit init)
+docs_site/    → MkDocs documentation site
+.agent/       → IDE runtime (Cursor, VSCode, Codex, Antigravity)
+```
 
+---
+
+## Quick Install
+
+### Local (per project)
+```bash
+git clone https://github.com/fabioffigueiredo/finance-data-governance-os.git
+cd finance-data-governance-os
+bash install/local/install.sh
+```
+
+### Global (entire machine)
+```bash
+git clone https://github.com/fabioffigueiredo/finance-data-governance-os.git
+cd finance-data-governance-os
+bash install/global/install.sh
+```
+
+### Via npm CLI (future)
+```bash
+npx @fabioffigueiredo/fgos-kit init
+```
+
+See [INSTALL.md](INSTALL.md) for full installation details.
 
 ---
 
@@ -103,7 +134,7 @@ Data scientists, ML engineers, data engineers and technical leaders working in r
 ## Roadmap
 
 v1 — Governance OS (current)  
-v2 — Advanced ML governance modules  
+v2 — MCP Server + Advanced ML governance modules  
 v3 — Enterprise governance platform (future direction)
 
 ---

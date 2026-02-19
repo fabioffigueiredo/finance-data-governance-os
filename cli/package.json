@@ -1,0 +1,29 @@
+{
+    "name": "@fabioffigueiredo/fgos-kit",
+    "version": "0.1.0",
+    "description": "Installer CLI for Finance Data Governance OS (.agent kit)",
+    "bin": {
+        "fgos-kit": "index.js"
+    },
+    "type": "module",
+    "keywords": [
+        "finance",
+        "governance",
+        "data-governance",
+        "ai-governance",
+        "compliance",
+        "lgpd",
+        "bacen",
+        "cvm",
+        "ml-governance"
+    ],
+    "author": "Fabio Ferreira Figueiredo",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/fabioffigueiredo/finance-data-governance-os.git"
+    },
+    "dependencies": {
+        "commander": "^12.1.0"
+    }
+}
