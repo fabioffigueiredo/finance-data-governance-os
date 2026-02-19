@@ -1,94 +1,92 @@
-# Finance Data Governance OS — Installation
+# Finance Data Governance OS - Installation Guide
 
-Framework instalável de governança de IA e dados para ambientes regulados.
-
-Compatível com:
-- Cursor
-- VSCode
-- Antigravity
-- Codex
-- Claude Code
-- Windsurf
+Este guia cobre todos os métodos de instalação do Finance Data Governance OS (FGOS).
 
 ---
 
-## Quick Install
+## 🚀 Método Recomendado: npm (Node.js)
 
-### 1. Clone the repository
+A maneira mais rápida e fácil de adicionar governança a qualquer projeto.
 
-```bash
-git clone https://github.com/fabioffigueiredo/finance-data-governance-os.git
-cd finance-data-governance-os
-```
-
-### 2. Choose install mode
-
-#### Local install (per project)
-
-Cria `.agent/` no diretório atual com agents, skills, workflows e rules:
-
-```bash
-bash install/local/install.sh
-```
-
-Ou para instalar em outro projeto:
-
-```bash
-bash install/local/install.sh /caminho/para/meu-projeto
-```
-
-#### Global install (entire machine)
-
-Instala em `~/.ai-governance/`:
-
-```bash
-bash install/global/install.sh
-```
-
----
-
-## Update
-
-Atualiza o repositório e re-instala globalmente:
-
-```bash
-bash install/global/update.sh
-```
-
----
-
-## Uninstall
-
-Remove a instalação global:
-
-```bash
-bash install/global/uninstall.sh
-```
-
----
-
-## Via npm CLI
-
-Instale rapidamente em qualquer projeto:
+### Instalação por Projeto (npx)
+Use este comando na raiz do seu projeto para criar a pasta `.agent/` com os agentes e skills:
 
 ```bash
 npx @fabioforest/fgos-kit init
 ```
 
-Ou instalar globalmente:
+**Opções de Segurança:**
+*   `--dry-run`: Simula a instalação sem fazer alterações.
+*   `--overwrite`: Permite atualizar uma instalação existente (cria backup automático).
+*   `--yes`: Pula confirmações (útil para CI/CD).
+
+Consulte [INSTALL_SAFETY.md](docs/INSTALL_SAFETY.md) para detalhes sobre auditoria e backups.
+
+*   Isso não instala nada globalmente.
+*   Funciona em qualquer diretório onde você tenha um projeto.
+
+### Instalação Global (ferramenta de linha de comando)
+Se você usa o FGOS frequentemente, pode instalar a ferramenta globalmente:
 
 ```bash
-npm i -g @fabioforest/fgos-kit
+npm install -g @fabioforest/fgos-kit
+```
+
+Depois, use o comando `fgos-kit` em qualquer lugar:
+
+```bash
 fgos-kit init
 ```
 
 ---
 
-## What gets installed
+## 💻 Método Shell Script (Linux/Mac)
 
-| Diretório | Conteúdo |
-|-----------|----------|
-| `.agent/agents/` | Agents de governança (10 core + Databricks) |
-| `.agent/skills/` | Skills operacionais (29 finance + 5 Databricks) |
-| `.agent/workflows/` | Fluxos de governança reutilizáveis |
-| `.agent/rules/` | Regras de compliance |
+Se você não tem Node.js ou prefere usar scripts shell.
+
+### Instalação Global (~/.ai-governance)
+Instala o FGOS no seu diretório home e configura o PATH.
+
+```bash
+# Clone o repositório (se ainda não tiver)
+git clone https://github.com/fabioffigueiredo/finance-data-governance-os.git
+cd finance-data-governance-os
+
+# Execute o instalador
+bash install/global/install.sh
+```
+
+**Para atualizar:**
+```bash
+bash install/global/update.sh
+```
+
+**Para desinstalar:**
+```bash
+bash install/global/uninstall.sh
+```
+
+### Instalação Local (no projeto atual)
+Útil para desenvolvimento ou testes do próprio FGOS.
+
+```bash
+# Na raiz deste repositório:
+bash install/local/install.sh
+```
+Isso instalará os agentes na pasta `.agent/` dentro do próprio repositório.
+
+---
+
+## 🛠️ Verificação
+
+Após a instalação, você deve ver uma pasta `.agent/` na raiz do seu projeto com a seguinte estrutura:
+
+```text
+.agent/
+├── agents/       # Agentes (Data Steward, Auditor, etc.)
+├── skills/       # Habilidades (Databricks, Unity Catalog, etc.)
+├── workflows/    # Fluxos de trabalho (Onboarding, Audit)
+└── rules/        # Regras de compliance
+```
+
+Se estiver usando o Cursor ou VS Code, ele detectará automaticamente os agentes.

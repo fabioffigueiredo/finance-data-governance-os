@@ -139,6 +139,16 @@ v3 — Enterprise governance platform (future direction)
 
 ---
 
+## 🛡️ Safety & Reliability
+
+The installer is **enterprise-grade safe**:
+*   **Dry-run**: `npx @fabioforest/fgos-kit init --dry-run` (simulate without changes)
+*   **Audit Logs**: detailed execution logs saved to `.agent/_audit/`
+*   **Auto-backup**: overwrites automatically create backups (e.g., `.agent.bak-2024...`)
+*   **Safe-by-default**: never overwrites without `--overwrite` flag
+
+See [Safety Policy](docs/INSTALL_SAFETY.md) for details.
+
 ## Author
 
 Fabio Ferreira Figueiredo  

@@ -1,6 +1,6 @@
 {
     "name": "@fabioforest/fgos-kit",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Installer CLI for Finance Data Governance OS (.agent kit)",
     "bin": {
         "fgos-kit": "index.js"
