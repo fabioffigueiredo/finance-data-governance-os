@@ -5,7 +5,8 @@ The Finance Data Governance OS installer (`fgos-kit`) is designed with a **Safet
 ## Core Safety Principles
 
 1.  **Non-Destructive by Default**: The installer will never overwrite existing files in `.agent/` without your explicit permission (`--overwrite` flag).
-2.  **Consent-First**: Unless running in CI mode (`--yes`), the installer will always ask for confirmation before making changes.
+2.  **Incremental Updates**: If `.agent/` exists, the installer enters **Merge Mode**. It adds missing files (new agents/skills) but **skips** any file that already exists to preserve your customizations.
+3.  **Consent-First**: Unless running in CI mode (`--yes`), the installer will always ask for confirmation before making changes.
 3.  **Audit Trails**: Every execution generates a detailed log file (Markdown and JSON) documenting exactly what was done.
 4.  **Automatic Backups**: Before overwriting any content, a timestamped backup of the previous version is created automatically.
 
@@ -18,13 +19,13 @@ Audit logs are stored in `.agent/_audit/`.
 
 ## Usage Modes
 
-### Safe Mode (Default)
+### Safe Mode (Default / Incremental)
 ```bash
 npx @fabioforest/fgos-kit init
 ```
 -   Checks if `.agent/` exists.
--   If it exists, aborts with a warning.
--   If not, asks for confirmation to create it.
+-   **If not exists**: Creates full structure.
+-   **If exists**: Scans for missing files and adds them (Smart Merge). **Existing files are preserved.**
 
 ### Simulation Mode (Dry Run)
 ```bash

@@ -145,7 +145,7 @@ The installer is **enterprise-grade safe**:
 *   **Dry-run**: `npx @fabioforest/fgos-kit init --dry-run` (simulate without changes)
 *   **Audit Logs**: detailed execution logs saved to `.agent/_audit/`
 *   **Auto-backup**: overwrites automatically create backups (e.g., `.agent.bak-2024...`)
-*   **Safe-by-default**: never overwrites without `--overwrite` flag
+*   **Safe-by-default**: incremental updates (adds missing files, preserves existing ones) unless `--overwrite` is used
 
 See [Safety Policy](docs/INSTALL_SAFETY.md) for details.
 

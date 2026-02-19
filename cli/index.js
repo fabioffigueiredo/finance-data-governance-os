@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /**
- * fgos-kit — safe installer
+ * fgos-kit — safe installer with incremental update (smart merge)
  * Principles:
- *  - Do not modify anything without explicit user consent
- *  - Never delete without showing a detailed plan
- *  - Always generate an audit log (success and failures)
+ *  - Do not modify existing files without explicit user consent (overwrite)
+ *  - Add missing files/directories (incremental update)
+ *  - Always generate an audit log
  */
 
 import { Command } from "commander";
@@ -59,12 +59,41 @@ function download(url, outPath) {
 }
 
 function ensureDir(p) {
-    fs.mkdirSync(p, { recursive: true });
+    if (!fs.existsSync(p)) {
+        fs.mkdirSync(p, { recursive: true });
+        return true; // created
+    }
+    return false; // existed
 }
 
 function safeCopyDir(src, dst) {
-    // Node >=16 has cpSync
     fs.cpSync(src, dst, { recursive: true });
+}
+
+// Smart Merge: walks source tree and copies ONLY if dest doesn't exist
+// Returns stats: { added: [], skipped: [] }
+function smartMerge(src, dst, stats = { added: [], skipped: [] }, rootDst = dst) {
+    const entries = fs.readdirSync(src, { withFileTypes: true });
+
+    ensureDir(dst);
+
+    for (const entry of entries) {
+        const srcPath = path.join(src, entry.name);
+        const dstPath = path.join(dst, entry.name);
+        const relPath = path.relative(rootDst, dstPath);
+
+        if (entry.isDirectory()) {
+            smartMerge(srcPath, dstPath, stats, rootDst);
+        } else {
+            if (fs.existsSync(dstPath)) {
+                stats.skipped.push(relPath);
+            } else {
+                fs.copyFileSync(srcPath, dstPath);
+                stats.added.push(relPath);
+            }
+        }
+    }
+    return stats;
 }
 
 function writeAuditLog(targetDir, logObj) {
@@ -101,16 +130,16 @@ function writeAuditLog(targetDir, logObj) {
 program
     .name("fgos-kit")
     .description("Safe installer for Finance Data Governance OS (.agent kit)")
-    .version("0.2.0");
+    .version("0.3.0");
 
 program
     .command("init")
-    .description("Initialize .agent/ with governance agents, skills, workflows and rules (safe-by-default)")
+    .description("Initialize or update .agent/ (safe incremental merge)")
     .option("--path <dir>", "target directory", ".")
     .option("--branch <name>", "branch to download from", DEFAULT_BRANCH)
-    .option("--yes", "skip interactive prompts (still creates backup before overwrite)", false)
+    .option("--yes", "skip interactive prompts", false)
     .option("--dry-run", "show plan and exit without changes", false)
-    .option("--overwrite", "allow overwriting existing .agent content (creates backup first)", false)
+    .option("--overwrite", "force overwrite existing files (creates backup)", false)
     .action(async (opts) => {
         const target = path.resolve(opts.path);
         const agentDir = path.join(target, ".agent");
@@ -129,104 +158,100 @@ program
         };
 
         try {
-            // 1) Context check (non-destructive)
-            if (!fs.existsSync(target)) {
-                throw new Error(`Target path does not exist: ${target}`);
-            }
+            if (!fs.existsSync(target)) throw new Error(`Target path does not exist: ${target}`);
 
             const agentExists = fs.existsSync(agentDir);
             logObj.plan.push(`Detect target: ${target}`);
             logObj.plan.push(`.agent exists: ${agentExists}`);
 
-            // 2) Decide what would happen
-            if (!agentExists) {
-                logObj.plan.push(`Create .agent/ directory`);
-            } else {
-                logObj.plan.push(`Existing .agent/ found`);
-                logObj.plan.push(`No deletion will happen unless --overwrite is provided and user confirms`);
+            let mode = "CREATE";
+            if (agentExists) {
+                if (opts.overwrite) mode = "OVERWRITE";
+                else mode = "MERGE";
             }
 
-            logObj.plan.push(`Download kit from GitHub tarball`);
-            logObj.plan.push(`Copy: agents/, skills/, workflows/ (if present), rules/ (if present) into .agent/`);
+            logObj.plan.push(`Operation Mode: ${mode}`);
+            if (mode === "OVERWRITE") logObj.plan.push(`Backup existing .agent -> Wipe -> Reinstall`);
+            if (mode === "MERGE") logObj.plan.push(`Incremental update: Add missing files, SKIP existing files`);
 
-            // 3) Show plan + require consent
-            console.log("\n=== PLAN (no changes yet) ===");
+            // Show plan
+            console.log("\n=== PLAN ===");
             for (const p of logObj.plan) console.log(" -", p);
 
             if (opts.dryRun) {
-                console.log("\n✅ Dry-run complete. No files were changed.");
+                console.log("\n✅ Dry-run complete.");
                 return;
             }
 
-            if (agentExists && !opts.overwrite) {
-                console.log("\n⚠️  .agent/ already exists.");
-                console.log("To proceed safely, re-run with: --overwrite");
-                console.log("Nothing was changed.");
-                return;
-            }
-
-            // If overwrite, ask confirmation (unless --yes)
+            // Confirmation
             if (!opts.yes) {
-                const ok = await askYesNo("\nProceed with installation? (y/N): ");
+                const ok = await askYesNo(`\nProceed with ${mode}? (y/N): `);
                 if (!ok) {
-                    console.log("Cancelled. No changes made.");
+                    console.log("Cancelled.");
                     return;
                 }
             }
 
-            // 4) Download & extract (still not touching target until ready)
+            // Download
             const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "fgos-"));
             const tarPath = path.join(tmp, "repo.tar.gz");
             const url = `https://codeload.github.com/${REPO}/tar.gz/refs/heads/${opts.branch}`;
 
             console.log("\n📦 Downloading kit...");
             await download(url, tarPath);
-
-            console.log("📂 Extracting...");
             execSync(`tar -xzf "${tarPath}" -C "${tmp}"`);
-
             const extracted = fs.readdirSync(tmp).find((d) => d.startsWith("finance-data-governance-os-"));
-            if (!extracted) throw new Error("Could not find extracted repository directory");
             const repoRoot = path.join(tmp, extracted);
 
-            // 5) Backup if overwriting
-            if (agentExists) {
+            // Execution
+            ensureDir(agentDir);
+
+            if (mode === "OVERWRITE") {
                 const backupDir = path.join(target, `.agent.bak-${runId}`);
                 console.log(`🧷 Creating backup: ${backupDir}`);
                 safeCopyDir(agentDir, backupDir);
                 logObj.executed.push(`Backup created: ${backupDir}`);
+
+                // Wipe subdirs to ensure clean slate, but keep .agent root (for audit logs)
+                const dirsToClear = ["agents", "skills", "workflows", "rules"];
+                for (const d of dirsToClear) fs.rmSync(path.join(agentDir, d), { recursive: true, force: true });
             }
 
-            // 6) Apply changes (scoped to .agent only)
-            ensureDir(agentDir);
-
             const dirsToCopy = ["agents", "skills", "workflows", "rules"];
+            let totalAdded = 0;
+            let totalSkipped = 0;
+
             for (const name of dirsToCopy) {
                 const src = path.join(repoRoot, name);
                 const dst = path.join(agentDir, name);
 
                 if (fs.existsSync(src)) {
-                    // if overwriting, remove target subdir (not whole .agent)
-                    fs.rmSync(dst, { recursive: true, force: true });
-                    safeCopyDir(src, dst);
-                    console.log(`  ✓ ${name}/`);
-                    logObj.executed.push(`Copied ${name}/ to .agent/${name}/`);
+                    if (mode === "OVERWRITE") {
+                        safeCopyDir(src, dst);
+                        console.log(`  ✓ ${name}/ (overwritten)`);
+                        logObj.executed.push(`Overwritten ${name}/`);
+                    } else {
+                        // MERGE logic
+                        const stats = smartMerge(src, dst, undefined, agentDir);
+                        console.log(`  ✓ ${name}/ (added: ${stats.added.length}, skipped: ${stats.skipped.length})`);
+                        logObj.executed.push(`Merged ${name}/: ${stats.added.length} new, ${stats.skipped.length} skipped`);
+                        totalAdded += stats.added.length;
+                        totalSkipped += stats.skipped.length;
+                    }
                 }
             }
 
-            // 7) Write audit logs
+            if (mode === "MERGE") {
+                console.log(`\nStats: ${totalAdded} files added, ${totalSkipped} files preserved.`);
+            }
+
             writeAuditLog(target, logObj);
-
-            console.log("\n✅ Installed safely.");
-            console.log(`Audit log saved at: ${path.join(target, ".agent", "_audit")}`);
-
-            // cleanup
+            console.log("\n✅ Done.");
             fs.rmSync(tmp, { recursive: true, force: true });
+
         } catch (err) {
-            logObj.errors.push(String(err?.stack || err?.message || err));
-            try {
-                writeAuditLog(path.resolve(opts.path), logObj);
-            } catch { }
+            logObj.errors.push(String(err?.stack || err?.message));
+            try { writeAuditLog(path.resolve(opts.path), logObj); } catch { }
             console.error("\n❌ Error:", err.message);
             process.exit(1);
         }
