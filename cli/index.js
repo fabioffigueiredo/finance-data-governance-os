@@ -3,9 +3,9 @@
  * cli/index.js — CLI para instalar o Finance Data Governance OS em qualquer projeto
  *
  * Uso:
- *   npx @fabioffigueiredo/fgos-kit init
- *   npx @fabioffigueiredo/fgos-kit init --path ./meu-projeto
- *   npx @fabioffigueiredo/fgos-kit init --force
+ *   npx @fabioforest/fgos-kit init
+ *   npx @fabioforest/fgos-kit init --path ./meu-projeto
+ *   npx @fabioforest/fgos-kit init --force
  *
  * O que faz:
  *   1. Baixa o tarball do repositório GitHub

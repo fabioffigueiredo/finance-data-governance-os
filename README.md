@@ -83,7 +83,7 @@ docs/         → operating manuals, architecture docs
 templates/    → evidence, policy and report templates
 demos/        → synthetic examples and use cases
 install/      → shell installers (local & global)
-cli/          → npm CLI installer (npx @fabioffigueiredo/fgos-kit init)
+cli/          → npm CLI installer (npx @fabioforest/fgos-kit init)
 docs_site/    → MkDocs documentation site
 .agent/       → IDE runtime (Cursor, VSCode, Codex, Antigravity)
 ```
@@ -106,9 +106,9 @@ cd finance-data-governance-os
 bash install/global/install.sh
 ```
 
-### Via npm CLI (future)
+### Via npm CLI
 ```bash
-npx @fabioffigueiredo/fgos-kit init
+npx @fabioforest/fgos-kit init
 ```
 
 See [INSTALL.md](INSTALL.md) for full installation details.

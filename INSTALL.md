@@ -67,18 +67,18 @@ bash install/global/uninstall.sh
 
 ---
 
-## Via npm CLI (futuro)
+## Via npm CLI
 
-Quando publicado no npm, será possível instalar com:
+Instale rapidamente em qualquer projeto:
 
 ```bash
-npx @fabioffigueiredo/fgos-kit init
+npx @fabioforest/fgos-kit init
 ```
 
 Ou instalar globalmente:
 
 ```bash
-npm i -g @fabioffigueiredo/fgos-kit
+npm i -g @fabioforest/fgos-kit
 fgos-kit init
 ```
 

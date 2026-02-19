@@ -1,5 +1,5 @@
 {
-    "name": "@fabioffigueiredo/fgos-kit",
+    "name": "@fabioforest/fgos-kit",
     "version": "0.1.0",
     "description": "Installer CLI for Finance Data Governance OS (.agent kit)",
     "bin": {
@@ -25,5 +25,8 @@
     },
     "dependencies": {
         "commander": "^12.1.0"
+    },
+    "publishConfig": {
+        "access": "public"
     }
 }
